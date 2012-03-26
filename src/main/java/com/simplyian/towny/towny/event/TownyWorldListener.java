@@ -1,0 +1,56 @@
+package com.simplyian.towny.towny.event;
+
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.event.world.WorldInitEvent;
+
+import com.simplyian.towny.towny.exception.AlreadyRegisteredException;
+import com.simplyian.towny.towny.exception.NotRegisteredException;
+import com.simplyian.towny.towny.Towny;
+import com.simplyian.towny.towny.TownyMessaging;
+import com.simplyian.towny.towny.object.TownyUniverse;
+import com.simplyian.towny.towny.object.TownyWorld;
+
+public class TownyWorldListener implements Listener {
+	//private final Towny plugin;
+
+	public TownyWorldListener(Towny instance) {
+		//plugin = instance;
+	}
+	
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onWorldLoad(WorldLoadEvent event) {
+		newWorld(event.getWorld().getName());
+	}
+	
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onWorldInit(WorldInitEvent event) {
+		newWorld(event.getWorld().getName());
+		
+	}
+
+	private void newWorld(String worldName) {
+		
+		//String worldName = event.getWorld().getName();
+		try {
+			TownyUniverse.getDataSource().newWorld(worldName);
+			TownyWorld world = TownyUniverse.getDataSource().getWorld(worldName);
+			if (world == null)
+				TownyMessaging.sendErrorMsg("Could not create data for " + worldName);
+			else {
+				if (!TownyUniverse.getDataSource().loadWorld(world)) {
+					// First time world has been noticed
+					TownyUniverse.getDataSource().saveWorld(world);
+				}
+			} 
+		} catch (AlreadyRegisteredException e) {
+			// Allready loaded			
+		} catch (NotRegisteredException e) {
+			TownyMessaging.sendErrorMsg("Could not create data for " + worldName);
+			e.printStackTrace();
+		}
+		
+	}
+}
