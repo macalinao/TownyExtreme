@@ -1,6 +1,6 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.palmergames.bukkit</groupId>
@@ -11,7 +11,36 @@
     <name>Towny</name>
     <url>http://code.google.com/a/eclipselabs.org/p/towny/</url>
     <description>Resident-Town-Nation heirarchy combined with a grid based protection system. Including a war event.</description>
+    
+    <!-- Developers -->
+    <developers>
+        <developer>
+            <id>simplyianm</id>
+            <name>Ian Macalinao</name>
+            <email>ianmacalinao@gmail.com</email>
+            <url>https://github.com/simplyianm</url>
+            <roles>
+                <role>developer</role>
+                <role>documenter</role>
+            </roles>
+            <timezone>-6</timezone>
+        </developer>
+    </developers>
+    
+    <!-- Issue Management -->
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/simplyianm/TownyExtreme/issues</url>
+    </issueManagement>
+    
+    <!-- Source code management -->
+    <scm>
+        <connection>scm:git:git://github.com/simplyianm/TownyExtreme.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:simplyianm/TownyExtreme.git</developerConnection>
+        <url>https://github.com/simplyianm/TownyExtreme</url>
+    </scm>
 
+    <!-- Properties -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <powermock.version>1.4.10</powermock.version>
