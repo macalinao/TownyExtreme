@@ -1,12 +1,6 @@
-<<<<<<< HEAD
-﻿name: ${project.name}
+name: ${project.name}
 main: ${project.groupId}.${project.artifactId}.${project.name}
 version: ${project.version}
-=======
-﻿name: Towny
-main: com.palmergames.bukkit.towny.Towny
-version: 0.79.1.9
->>>>>>> 65bdea38d27252fe74f522ce67d0ec23cd289b20
 author: Shade, Modified by FuzzeWuzze. Forked by ElgarL
 website: ${project.url}
 description: ${project.description}
