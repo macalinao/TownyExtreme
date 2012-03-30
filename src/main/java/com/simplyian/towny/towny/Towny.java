@@ -86,9 +86,6 @@ public class Towny extends JavaPlugin {
             if (TownySettings.isTownyUpdating(getVersion())) {
                 update();
             }
-
-            // Register all child permissions
-            TownyUniverse.getPermissionSource().registerPermissionNodes();
         }
 
         listenerManager = new ListenerManager(this);

@@ -17,13 +17,17 @@ import com.simplyian.towny.towny.object.TownyWorld;
  */
 public class TownyPermissionSource {
     private Towny plugin;
-    
+
     public TownyPermissionSource(Towny plugin) {
         this.plugin = plugin;
     }
 
     public boolean hasPermission(Player player, String node) {
-        return player.hasPermission(node);
+        if (plugin.getVaultHelper().hasPermissions()) {
+            return plugin.getVaultHelper().getPermission().has(player, node);
+        } else {
+            return player.hasPermission(node);
+        }
     }
 
     public boolean hasWildOverride(TownyWorld world, Player player, int blockId, TownyPermission.ActionType action) {
@@ -32,7 +36,7 @@ public class TownyPermissionSource {
 
         //check for permissions
         if (bpermissions = plugin.isPermissions()) {
-            if ((hasPermission(player, PermissionNodes.TOWNY_WILD_BLOCK_ALL.getNode(blockId + "." + action.toString().toLowerCase())))) {
+            if ((hasPermission(player, PermissionNodes.TOWNY_WILD_ALL.getNode(blockId + "." + action.toString().toLowerCase())))) {
                 return true;
             }
         }
@@ -66,7 +70,7 @@ public class TownyPermissionSource {
 
         //check for permissions
         if (bpermissions = plugin.isPermissions()) {
-            if ((hasPermission(player, PermissionNodes.TOWNY_CLAIMED_ALL_BLOCK.getNode(blockId + "." + action.toString().toLowerCase())))
+            if ((hasPermission(player, PermissionNodes.TOWNY_CLAIMED_ALLTOWN_BLOCK.getNode(blockId + "." + action.toString().toLowerCase())))
                     || (hasAllTownOverride(player, blockId, action))) {
                 return true;
             }
@@ -86,7 +90,7 @@ public class TownyPermissionSource {
 
         //check for permissions
         if (bpermissions = plugin.isPermissions()) {
-            if ((hasPermission(player, PermissionNodes.TOWNY_CLAIMED_ALL_BLOCK.getNode(blockId + "." + action.toString().toLowerCase())))) {
+            if ((hasPermission(player, PermissionNodes.TOWNY_CLAIMED_ALLTOWN_BLOCK.getNode(blockId + "." + action.toString().toLowerCase())))) {
                 return true;
             }
         }
@@ -106,75 +110,75 @@ public class TownyPermissionSource {
         return hasPermission(player, PermissionNodes.TOWNY_ADMIN.getNode());
     }
 
-    public void registerPermissionNodes() {
-
-        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-            @Override
-            public void run() {
-                Permission perm = null;
-
-                for (int blockId = 0; blockId < 512; blockId++) {
-                    /**
-                     * Register all towny.wild.block.[id].* nodes
-                     */
-                    perm = new Permission(PermissionNodes.TOWNY_WILD_BLOCK_BUILD.getNode(blockId), "User can build a specific block in the wild.", PermissionDefault.FALSE, null);
-                    perm.addParent(PermissionNodes.TOWNY_WILD_BUILD.getNode(), true);
-                    //perm.addParent(PermissionNodes.TOWNY_WILD_BLOCK_BUILD.getNode(), true);
-
-                    perm = new Permission(PermissionNodes.TOWNY_WILD_BLOCK_DESTROY.getNode(blockId + ""), "User can destroy a specific block in the wild.", PermissionDefault.FALSE, null);
-                    perm.addParent(PermissionNodes.TOWNY_WILD_DESTROY.getNode(), true);
-                    //perm.addParent(PermissionNodes.TOWNY_WILD_BLOCK_DESTROY.getNode(), true);
-
-                    perm = new Permission(PermissionNodes.TOWNY_WILD_BLOCK_SWITCH.getNode(blockId + ""), "User can switch a specific block in the wild.", PermissionDefault.FALSE, null);
-                    perm.addParent(PermissionNodes.TOWNY_WILD_SWITCH.getNode(), true);
-                    //perm.addParent(PermissionNodes.TOWNY_WILD_BLOCK_SWITCH.getNode(), true);
-
-                    perm = new Permission(PermissionNodes.TOWNY_WILD_BLOCK_ITEM_USE.getNode(blockId + ""), "User can item_use a specific block in the wild.", PermissionDefault.FALSE, null);
-                    perm.addParent(PermissionNodes.TOWNY_WILD_ITEM_USE.getNode(), true);
-                    //perm.addParent(PermissionNodes.TOWNY_WILD_BLOCK_ITEM_USE.getNode(), true);
-
-                    /**
-                     * Register all towny.claimed.alltown.block.[id].* nodes
-                     */
-                    perm = new Permission(PermissionNodes.TOWNY_CLAIMED_ALL_BLOCK_BUILD.getNode(blockId + ""), "User can build in all town zones.", PermissionDefault.FALSE, null);
-                    perm.addParent(PermissionNodes.TOWNY_CLAIMED_BUILD.getNode(), true);
-                    //perm.addParent(PermissionNodes.TOWNY_CLAIMED_ALL_BLOCK_BUILD.getNode(), true);
-
-                    perm = new Permission(PermissionNodes.TOWNY_CLAIMED_ALL_BLOCK_DESTROY.getNode(blockId + ""), "User can destroy in all town zones.", PermissionDefault.FALSE, null);
-                    perm.addParent(PermissionNodes.TOWNY_CLAIMED_DESTROY.getNode(), true);
-                    //perm.addParent(PermissionNodes.TOWNY_CLAIMED_ALL_BLOCK_DESTROY.getNode(), true);
-
-                    perm = new Permission(PermissionNodes.TOWNY_CLAIMED_ALL_BLOCK_SWITCH.getNode(blockId + ""), "User can switch in all town zones.", PermissionDefault.FALSE, null);
-                    perm.addParent(PermissionNodes.TOWNY_CLAIMED_SWITCH.getNode(), true);
-                    //perm.addParent(PermissionNodes.TOWNY_CLAIMED_ALL_BLOCK_SWITCH.getNode(), true);
-
-                    perm = new Permission(PermissionNodes.TOWNY_CLAIMED_ALL_BLOCK_ITEM_USE.getNode(blockId + ""), "User can item_use in all town zones.", PermissionDefault.FALSE, null);
-                    perm.addParent(PermissionNodes.TOWNY_CLAIMED_ITEM_USE.getNode(), true);
-                    //perm.addParent(PermissionNodes.TOWNY_CLAIMED_ALL_BLOCK_ITEM_USE.getNode(), true);
-
-                    /**
-                     * Register all towny.claimed.owntown.block.[id].* nodes
-                     */
-                    perm = new Permission(PermissionNodes.TOWNY_CLAIMED_OWNTOWN_BLOCK_BUILD.getNode(blockId + ""), "User can build in own town zones.", PermissionDefault.FALSE, null);
-                    perm.addParent(PermissionNodes.TOWNY_CLAIMED_BUILD.getNode(), true);
-                    //perm.addParent(PermissionNodes.TOWNY_CLAIMED_OWNTOWN_BLOCK_BUILD.getNode(), true);
-
-                    perm = new Permission(PermissionNodes.TOWNY_CLAIMED_OWNTOWN_BLOCK_DESTROY.getNode(blockId + ""), "User can destroy in own town zones.", PermissionDefault.FALSE, null);
-                    perm.addParent(PermissionNodes.TOWNY_CLAIMED_DESTROY.getNode(), true);
-                    //perm.addParent(PermissionNodes.TOWNY_CLAIMED_OWNTOWN_BLOCK_DESTROY.getNode(), true);
-
-                    perm = new Permission(PermissionNodes.TOWNY_CLAIMED_OWNTOWN_BLOCK_SWITCH.getNode(blockId + ""), "User can switch in own town zones.", PermissionDefault.FALSE, null);
-                    perm.addParent(PermissionNodes.TOWNY_CLAIMED_SWITCH.getNode(), true);
-                    //perm.addParent(PermissionNodes.TOWNY_CLAIMED_OWNTOWN_BLOCK_SWITCH.getNode(), true);
-
-                    perm = new Permission(PermissionNodes.TOWNY_CLAIMED_OWNTOWN_BLOCK_ITEM_USE.getNode(blockId + ""), "User can item_use in own town zones.", PermissionDefault.FALSE, null);
-                    perm.addParent(PermissionNodes.TOWNY_CLAIMED_ITEM_USE.getNode(), true);
-                    //perm.addParent(PermissionNodes.TOWNY_CLAIMED_OWNTOWN_BLOCK_ITEM_USE.getNode(), true);
-                }
-
-            }
-
-        }, 1);
-    }
+//    public void registerPermissionNodes() {
+//
+//        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+//            @Override
+//            public void run() {
+//                Permission perm = null;
+//
+//                for (int blockId = 0; blockId < 512; blockId++) {
+//                    /**
+//                     * Register all towny.wild.block.[id].* nodes
+//                     */
+//                    perm = new Permission(PermissionNodes.TOWNY_WILD_BLOCK_BUILD.getNode(blockId), "User can build a specific block in the wild.", PermissionDefault.FALSE, null);
+//                    perm.addParent(PermissionNodes.TOWNY_WILD_BUILD.getNode(), true);
+//                    //perm.addParent(PermissionNodes.TOWNY_WILD_BLOCK_BUILD.getNode(), true);
+//
+//                    perm = new Permission(PermissionNodes.TOWNY_WILD_BLOCK_DESTROY.getNode(blockId + ""), "User can destroy a specific block in the wild.", PermissionDefault.FALSE, null);
+//                    perm.addParent(PermissionNodes.TOWNY_WILD_DESTROY.getNode(), true);
+//                    //perm.addParent(PermissionNodes.TOWNY_WILD_BLOCK_DESTROY.getNode(), true);
+//
+//                    perm = new Permission(PermissionNodes.TOWNY_WILD_BLOCK_SWITCH.getNode(blockId + ""), "User can switch a specific block in the wild.", PermissionDefault.FALSE, null);
+//                    perm.addParent(PermissionNodes.TOWNY_WILD_SWITCH.getNode(), true);
+//                    //perm.addParent(PermissionNodes.TOWNY_WILD_BLOCK_SWITCH.getNode(), true);
+//
+//                    perm = new Permission(PermissionNodes.TOWNY_WILD_BLOCK_ITEM_USE.getNode(blockId + ""), "User can item_use a specific block in the wild.", PermissionDefault.FALSE, null);
+//                    perm.addParent(PermissionNodes.TOWNY_WILD_ITEM_USE.getNode(), true);
+//                    //perm.addParent(PermissionNodes.TOWNY_WILD_BLOCK_ITEM_USE.getNode(), true);
+//
+//                    /**
+//                     * Register all towny.claimed.alltown.block.[id].* nodes
+//                     */
+//                    perm = new Permission(PermissionNodes.TOWNY_CLAIMED_ALL_BLOCK_BUILD.getNode(blockId + ""), "User can build in all town zones.", PermissionDefault.FALSE, null);
+//                    perm.addParent(PermissionNodes.TOWNY_CLAIMED_BUILD.getNode(), true);
+//                    //perm.addParent(PermissionNodes.TOWNY_CLAIMED_ALL_BLOCK_BUILD.getNode(), true);
+//
+//                    perm = new Permission(PermissionNodes.TOWNY_CLAIMED_ALL_BLOCK_DESTROY.getNode(blockId + ""), "User can destroy in all town zones.", PermissionDefault.FALSE, null);
+//                    perm.addParent(PermissionNodes.TOWNY_CLAIMED_DESTROY.getNode(), true);
+//                    //perm.addParent(PermissionNodes.TOWNY_CLAIMED_ALL_BLOCK_DESTROY.getNode(), true);
+//
+//                    perm = new Permission(PermissionNodes.TOWNY_CLAIMED_ALL_BLOCK_SWITCH.getNode(blockId + ""), "User can switch in all town zones.", PermissionDefault.FALSE, null);
+//                    perm.addParent(PermissionNodes.TOWNY_CLAIMED_SWITCH.getNode(), true);
+//                    //perm.addParent(PermissionNodes.TOWNY_CLAIMED_ALL_BLOCK_SWITCH.getNode(), true);
+//
+//                    perm = new Permission(PermissionNodes.TOWNY_CLAIMED_ALL_BLOCK_ITEM_USE.getNode(blockId + ""), "User can item_use in all town zones.", PermissionDefault.FALSE, null);
+//                    perm.addParent(PermissionNodes.TOWNY_CLAIMED_ITEM_USE.getNode(), true);
+//                    //perm.addParent(PermissionNodes.TOWNY_CLAIMED_ALL_BLOCK_ITEM_USE.getNode(), true);
+//
+//                    /**
+//                     * Register all towny.claimed.owntown.block.[id].* nodes
+//                     */
+//                    perm = new Permission(PermissionNodes.TOWNY_CLAIMED_OWNTOWN_BLOCK_BUILD.getNode(blockId + ""), "User can build in own town zones.", PermissionDefault.FALSE, null);
+//                    perm.addParent(PermissionNodes.TOWNY_CLAIMED_BUILD.getNode(), true);
+//                    //perm.addParent(PermissionNodes.TOWNY_CLAIMED_OWNTOWN_BLOCK_BUILD.getNode(), true);
+//
+//                    perm = new Permission(PermissionNodes.TOWNY_CLAIMED_OWNTOWN_BLOCK_DESTROY.getNode(blockId + ""), "User can destroy in own town zones.", PermissionDefault.FALSE, null);
+//                    perm.addParent(PermissionNodes.TOWNY_CLAIMED_DESTROY.getNode(), true);
+//                    //perm.addParent(PermissionNodes.TOWNY_CLAIMED_OWNTOWN_BLOCK_DESTROY.getNode(), true);
+//
+//                    perm = new Permission(PermissionNodes.TOWNY_CLAIMED_OWNTOWN_BLOCK_SWITCH.getNode(blockId + ""), "User can switch in own town zones.", PermissionDefault.FALSE, null);
+//                    perm.addParent(PermissionNodes.TOWNY_CLAIMED_SWITCH.getNode(), true);
+//                    //perm.addParent(PermissionNodes.TOWNY_CLAIMED_OWNTOWN_BLOCK_SWITCH.getNode(), true);
+//
+//                    perm = new Permission(PermissionNodes.TOWNY_CLAIMED_OWNTOWN_BLOCK_ITEM_USE.getNode(blockId + ""), "User can item_use in own town zones.", PermissionDefault.FALSE, null);
+//                    perm.addParent(PermissionNodes.TOWNY_CLAIMED_ITEM_USE.getNode(), true);
+//                    //perm.addParent(PermissionNodes.TOWNY_CLAIMED_OWNTOWN_BLOCK_ITEM_USE.getNode(), true);
+//                }
+//
+//            }
+//
+//        }, 1);
+//    }
 
 }
